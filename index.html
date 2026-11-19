@@ -339,11 +339,11 @@
                     <h4 class="text-xs font-bold uppercase tracking-wider text-olive-dark">Standart müşteri</h4>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-[11px] font-medium text-gray-600 mb-1">Yaprakları ayıklanmış alım (TL/kg)</label>
+                            <label class="block text-[11px] font-medium text-gray-600 mb-1">Yapraksız alım (TL/kg)</label>
                             <input type="number" id="price_std_clean_buy" step="0.5" min="0" class="w-full h-10 px-3 bg-white border border-olive-border rounded-lg text-sm font-semibold">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-medium text-gray-600 mb-1">Yaprakları ayıklanmamış alım (TL/kg)</label>
+                            <label class="block text-[11px] font-medium text-gray-600 mb-1">Yapraklı alım (TL/kg)</label>
                             <input type="number" id="price_std_unclean_buy" step="0.5" min="0" class="w-full h-10 px-3 bg-white border border-olive-border rounded-lg text-sm font-semibold">
                         </div>
                     </div>
@@ -354,11 +354,11 @@
                     <h4 class="text-xs font-bold uppercase tracking-wider text-olive-dark">Kooperatif ortağı</h4>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-[11px] font-medium text-gray-600 mb-1">Yaprakları ayıklanmış alım (TL/kg)</label>
+                            <label class="block text-[11px] font-medium text-gray-600 mb-1">Yapraksız alım (TL/kg)</label>
                             <input type="number" id="price_coop_clean_buy" step="0.5" min="0" class="w-full h-10 px-3 bg-white border border-olive-border rounded-lg text-sm font-semibold">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-medium text-gray-600 mb-1">Yaprakları ayıklanmamış alım (TL/kg)</label>
+                            <label class="block text-[11px] font-medium text-gray-600 mb-1">Yapraklı alım (TL/kg)</label>
                             <input type="number" id="price_coop_unclean_buy" step="0.5" min="0" class="w-full h-10 px-3 bg-white border border-olive-border rounded-lg text-sm font-semibold">
                         </div>
                     </div>
@@ -618,7 +618,7 @@
         function renderLivePrintPreview(res) {
             const dateStr = getFormattedDateTime();
             const groupText = state.group === 'standard' ? 'Standart Müşteri' : 'Kooperatif Ortağı';
-            const statusText = state.status === 'cleaned' ? 'Yaprakları Ayıklanmış' : 'Yaprakları Ayıklanmamış';
+            const statusText = state.status === 'cleaned' ? 'Yapraksız' : 'Yapraklı';
             const customerDisplay = state.customerName.trim() ? escapeHtml(state.customerName.trim()) : '-';
             const receiptDisplay = state.receiptNo.trim() ? escapeHtml(state.receiptNo.trim()) : '-';
 
@@ -645,7 +645,7 @@
 
                     <div class="flex items-center justify-between border-t border-black pt-2 text-[10px]">
                         <span>Alım: <strong>${res.buyPrice.toLocaleString('tr-TR')} TL/kg</strong></span>
-                        <span>Alım: <strong>Toplam Net: ${formatNumber(res.netKg)} kg</strong></span>
+                        <span>Toplam Net: <strong>${formatNumber(res.netKg)} kg</strong></span>
                     </div>
                 `;
             } else {
