@@ -396,7 +396,7 @@
             }
         };
 
-        function createRow(gross = 1000, boats = 0) {
+        function createRow(gross = 0, boats = 0) {
             return {
                 id: 'row_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
                 gross: gross,
@@ -436,7 +436,7 @@
         let state = {
             group: 'standard',       // 'standard' | 'coop'
             status: 'cleaned',       // 'cleaned' | 'uncleaned'
-            rows: [createRow(1000, 0)],
+            rows: [createRow(0, 0)],
             customerName: '',
             receiptNo: '',
             previewMode: 'label',  // 'label' | 'a4'
@@ -805,7 +805,7 @@
         document.getElementById('newCalcBtn').addEventListener('click', () => {
             state.group = 'standard';
             state.status = 'cleaned';
-            state.rows = [createRow(1000, 0)];
+            state.rows = [createRow(0, 0)];
             state.customerName = '';
             state.receiptNo = '';
             state.previewMode = 'label';
