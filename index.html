@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mudanya İmece - Çepni Zeytinyağı Fabrikası</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        olive: {
+                            bg: '#F4F6F2',
+                            dark: '#274931',
+                            darker: '#1E3A26',
+                            medium: '#3A6345',
+                            soft: '#EEF3EE',
+                            gold: '#B5B475',
+                            tan: '#8A8951',
+                            border: '#E2E6E0'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #F4F6F2;
+            color: #1F2922;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Sayısal girişlerde varsayılan artırma/azaltma oklarını gizle */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        /* Yazdırma stilleri */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #livePrintCanvas, #livePrintCanvas * {
+                visibility: visible;
+            }
+            #livePrintCanvas {
+                position: fixed;
+                left: 0;
+                top: 0;
+                margin: 0 !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Üst Gezinme Çubuğu -->
+    <header class="bg-white border-b border-olive-border w-full no-print">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+            <!-- Marka Logosu -->
+            <div class="flex items-center select-none">
+                <svg class="h-12 w-auto" viewBox="0 0 265 78" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Mudanya İmece Çepni Zeytinyağı Fabrikası">
+                    <!-- Sol Üst Yaprak / Zeytin Motifi -->
+                    <path d="M18 11 C25 11, 28 16, 28 21 C23 21, 18 18, 18 11 Z" fill="#8A8951"/>
+                    <path d="M40 11 C33 11, 30 16, 30 21 C35 21, 40 18, 40 11 Z" fill="#274931"/>
+                    <circle cx="51" cy="16" r="3.8" fill="#8A8951"/>
+
+                    <!-- Fabrika Çatısı ve 'i' Gövdesi -->
+                    <path d="M18 32 L36 16 L54 32 L54 57 L43 57 L43 36 L36 30 L29 36 L29 57 L18 57 Z" fill="#274931"/>
+                    <rect x="33" y="42" width="6" height="15" rx="1" fill="#8A8951"/>
+
+                    <!-- 'mudanya' yazısı -->
+                    <text x="61" y="29" fill="#3B3C2B" font-family="Inter, sans-serif" font-weight="600" font-size="22" letter-spacing="-0.6">mudanya</text>
+
+                    <!-- 'imece' yazısı -->
+                    <text x="60" y="57" fill="#8A8951" font-family="Inter, sans-serif" font-weight="600" font-size="34" letter-spacing="-1">imece</text>
+
+                    <!-- Alt Başlık -->
+                    <text x="18" y="72" fill="#181C19" font-family="Inter, sans-serif" font-weight="800" font-size="9.5" letter-spacing="0.4">ÇEPNİ ZEYTİNYAĞI FABRİKASI</text>
+                </svg>
+            </div>
+
+            <!-- Sağ Buton: Fiyat Ayarları -->
+            <button id="openSettingsBtn" type="button" class="px-4 py-2.5 bg-white hover:bg-gray-50 active:bg-gray-100 text-[#1F2922] text-sm font-medium rounded-xl border border-olive-border shadow-xs transition-all cursor-pointer">
+                Fiyat ayarları
+            </button>
+        </div>
+    </header>
+
+    <!-- Bildirim Alanı -->
+    <div id="toastContainer" class="fixed top-24 right-4 z-50 flex flex-col gap-2 pointer-events-none no-print"></div>
+
+    <!-- Ana İçerik -->
+    <main class="flex-1 w-full max-w-[1040px] mx-auto px-4 sm:px-6 py-7 sm:py-9">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+
+            <!-- SOL KART: 1 Kabul bilgileri -->
+            <section class="bg-white rounded-2xl border border-olive-border p-6 sm:p-7 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex flex-col justify-between no-print">
+                <div>
+                    <!-- Kart Başlığı -->
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="w-6 h-6 rounded-full bg-[#EEF1EC] text-[#4A554E] text-xs font-bold flex items-center justify-center">1</span>
+                        <h2 class="text-[17px] font-bold text-[#1F2922] tracking-tight">Kabul bilgileri</h2>
+                    </div>
+
+                    <!-- 1) Müşteri grubu -->
+                    <div class="mb-5">
+                        <label class="block text-xs font-semibold text-[#2E3831] mb-2">
+                            Müşteri grubu
+                        </label>
+                        <div class="grid grid-cols-2 gap-3" role="group" aria-label="Müşteri grubu">
+                            <button
+                                type="button"
+                                data-group="standard"
+                                class="group-btn h-11 px-3 rounded-xl text-[13px] font-semibold transition-all cursor-pointer border-2 border-olive-dark bg-olive-soft text-olive-dark"
+                            >
+                                Standart müşteri
+                            </button>
+                            <button
+                                type="button"
+                                data-group="coop"
+                                class="group-btn h-11 px-3 rounded-xl text-[13px] font-medium transition-all cursor-pointer border border-olive-border bg-white text-[#2E3831] hover:bg-gray-50"
+                            >
+                                Kooperatif ortağı
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Zeytinin durumu -->
+                    <div class="mb-4">
+                        <label class="block text-xs font-semibold text-[#2E3831] mb-2">
+                            Zeytinin durumu
+                        </label>
+                        <div class="grid grid-cols-2 gap-3" role="group" aria-label="Zeytinin durumu">
+                            <button
+                                type="button"
+                                data-status="cleaned"
+                                class="status-btn h-11 px-3 rounded-xl text-[13px] font-semibold transition-all cursor-pointer border-2 border-olive-dark bg-olive-soft text-olive-dark"
+                            >
+                                Yaprakları ayıklanmış
+                            </button>
+                            <button
+                                type="button"
+                                data-status="uncleaned"
+                                class="status-btn h-11 px-3 rounded-xl text-[13px] font-medium transition-all cursor-pointer border border-olive-border bg-white text-[#2E3831] hover:bg-gray-50"
+                            >
+                                Yaprakları ayıklanmamış
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Zeytin Alım Birim Fiyatı -->
+                    <div class="bg-[#F6F7F5] border border-[#ECEFEA] rounded-xl px-4 py-3 mb-5 flex items-center justify-between text-xs">
+                        <span class="text-[#5C665F]">Zeytin alım birim fiyatı</span>
+                        <strong id="displayBuyPrice" class="text-[#1F2922] font-bold">27 TL/kg</strong>
+                    </div>
+
+                    <!-- 2) Müşteri adı ve Fiş no yan yana -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-5">
+                        <div>
+                            <label for="customerNameInput" class="block text-xs font-semibold text-[#2E3831] mb-1.5">
+                                Müşteri adı <span class="font-normal text-gray-500">· zorunlu</span>
+                            </label>
+                            <input
+                                type="text"
+                                id="customerNameInput"
+                                placeholder="Müşteri adı girin"
+                                class="w-full h-11 px-3.5 text-sm font-medium text-[#1F2922] bg-white border border-olive-border rounded-xl focus:outline-none focus:border-olive-dark focus:ring-2 focus:ring-olive-dark/15 transition-all"
+                            >
+                        </div>
+                        <div>
+                            <label for="receiptNoInput" class="block text-xs font-semibold text-[#2E3831] mb-1.5">
+                                Fiş no <span class="font-normal text-gray-500">· isteğe bağlı</span>
+                            </label>
+                            <input
+                                type="text"
+                                id="receiptNoInput"
+                                placeholder="Örn. 1042"
+                                class="w-full h-11 px-3.5 text-sm font-medium text-[#1F2922] bg-white border border-olive-border rounded-xl focus:outline-none focus:border-olive-dark focus:ring-2 focus:ring-olive-dark/15 transition-all"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- 3) Çoklu Tartım Satırları (Brüt kg / Tekne adedi / Net kg) -->
+                    <div class="mb-2">
+                        <div class="grid grid-cols-3 gap-2.5 mb-1.5 px-0.5">
+                            <span class="text-xs font-semibold text-[#2E3831]">Brüt kg</span>
+                            <span class="text-xs font-semibold text-[#2E3831]">Tekne adedi <span class="font-normal text-gray-400">(1 tekne = 35 kg)</span></span>
+                            <span class="text-xs font-semibold text-[#2E3831]">Net kg</span>
+                        </div>
+                        <div id="weighingRowsContainer" class="space-y-2.5">
+                            <!-- Satırlar JavaScript ile oluşturulur -->
+                        </div>
+                    </div>
+
+                    <!-- Sağ tarafa yaslı "+ Satır ekle" butonu -->
+                    <div class="flex justify-end mt-2.5 mb-3">
+                        <button
+                            type="button"
+                            id="addRowBtn"
+                            class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-olive-soft hover:bg-[#E2ECE2] active:bg-[#D5E3D5] text-olive-dark text-xs font-semibold rounded-xl border border-olive-dark/20 transition-colors cursor-pointer"
+                        >
+                            <span>+ Satır ekle</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 4) En Alt Bölüm: Net hesap -->
+                <div class="pt-5 border-t border-[#ECEFEA]">
+                    <h3 class="text-sm font-bold text-[#1F2922] mb-1.5">Net hesap</h3>
+                    <div id="netAccountTotalSummary" class="bg-[#F8F9F7] border border-[#ECEFEA] rounded-xl px-3.5 py-2.5 text-xs font-semibold text-[#2E3831]">
+                        Toplam (1 tartım) brüt: 1.000 kg tekne: 0 net: 1.000 kg
+                    </div>
+                </div>
+            </section>
+
+            <!-- SAĞ KART: 2 İşlem özeti -->
+            <section class="bg-olive-dark text-white rounded-2xl p-6 sm:p-7 shadow-[0_6px_24px_rgba(39,73,49,0.16)] flex flex-col justify-between">
+                <div>
+                    <!-- Kart Başlığı -->
+                    <div class="flex items-center gap-3 mb-6 no-print">
+                        <span class="w-6 h-6 rounded-full bg-white text-olive-dark text-xs font-bold flex items-center justify-center">2</span>
+                        <h2 class="text-[17px] font-bold text-white tracking-tight">İşlem özeti</h2>
+                    </div>
+
+                    <!-- Yalnızca Müşteri Adı, Fiş No ve Toplam Net kg -->
+                    <div class="bg-[#203E29] border border-[#34593F] rounded-xl p-4 mb-5 space-y-3 no-print">
+                        <div class="flex items-center justify-between gap-3">
+                            <span class="text-xs font-medium text-[#B9C9BE]">Müşteri Adı</span>
+                            <span id="summaryCustomerName" class="text-sm font-bold text-white text-right truncate">-</span>
+                        </div>
+                        <div class="border-t border-[#32543C]"></div>
+                        <div class="flex items-center justify-between gap-3">
+                            <span class="text-xs font-medium text-[#B9C9BE]">Fiş No</span>
+                            <span id="summaryReceiptNo" class="text-sm font-bold text-white text-right">-</span>
+                        </div>
+                        <div class="border-t border-[#32543C]"></div>
+                        <div class="flex items-center justify-between gap-3 pt-0.5">
+                            <span class="text-xs font-semibold text-[#E3ECE6]">Net kg</span>
+                            <div class="flex items-baseline gap-1">
+                                <span id="summaryTotalNetKg" class="text-3xl font-extrabold text-white tracking-tight">1.000</span>
+                                <span class="text-xs font-semibold text-[#B9C9BE]">kg</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alt Butonlar: 80 × 60 mm etiket, A4 döküm, Yeni hesaplama -->
+                    <div class="grid grid-cols-3 gap-2.5 mb-5 no-print">
+                        <button
+                            type="button"
+                            id="modeLabelBtn"
+                            class="h-14 px-2 bg-white text-[#1A281E] text-xs font-bold rounded-xl leading-tight flex items-center justify-center text-center transition-all cursor-pointer shadow-xs"
+                        >
+                            80 × 60 mm<br>etiket
+                        </button>
+                        <button
+                            type="button"
+                            id="modeA4Btn"
+                            class="h-14 px-2 bg-[#496A53] hover:bg-[#54785F] active:bg-[#3E5C47] text-white text-xs font-semibold rounded-xl flex items-center justify-center text-center transition-all cursor-pointer"
+                        >
+                            A4 döküm
+                        </button>
+                        <button
+                            type="button"
+                            id="newCalcBtn"
+                            class="h-14 px-2 bg-[#213F2A] hover:bg-[#1B3422] active:bg-[#15291B] border border-[#3B6146] text-white text-xs font-semibold rounded-xl flex items-center justify-center text-center transition-all cursor-pointer"
+                        >
+                            Yeni hesaplama
+                        </button>
+                    </div>
+
+                    <!-- Canlı Baskı Önizleme Alanı -->
+                    <div class="bg-[#203E29] border border-[#34593F] rounded-xl p-4">
+                        <div class="flex items-center justify-between gap-2 mb-3 no-print">
+                            <span id="previewSectionLabel" class="text-xs font-bold text-[#E3ECE6]">Etiket baskı önizlemesi (80 × 60 mm)</span>
+                            <button
+                                type="button"
+                                id="printNowBtn"
+                                class="px-3 py-1.5 bg-white hover:bg-[#F4F7F4] active:bg-[#E8EEE8] text-[#1A281E] text-xs font-bold rounded-lg inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                            >
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                                </svg>
+                                Yazdır
+                            </button>
+                        </div>
+
+                        <div class="bg-[#EEF1EC] rounded-lg p-3 flex items-center justify-center overflow-x-auto">
+                            <div id="livePrintCanvas" class="bg-white text-gray-900 shadow-sm">
+                                <!-- Seçili moda (80x60 mm etiket veya A4 döküm) göre önizleme -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- MODAL: Fiyat Ayarları (Yalnızca zeytin alım fiyatı TL/kg) -->
+    <div id="settingsModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-[2px] p-4 no-print">
+        <div class="bg-white rounded-2xl border border-olive-border w-full max-w-lg shadow-xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-olive-border flex items-center justify-between">
+                <div>
+                    <h3 class="text-base font-bold text-[#1F2922]">Fiyat ayarları</h3>
+                    <p class="text-xs text-gray-500">Müşteri grupları için zeytin alım fiyatlarını güncelleyin (TL/kg)</p>
+                </div>
+                <button type="button" id="closeSettingsBtn" class="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center text-gray-500 cursor-pointer">
+                    ✕
+                </button>
+            </div>
+
+            <div class="p-6 space-y-5 max-h-[75vh] overflow-y-auto">
+                <!-- Standart Müşteri -->
+                <div class="bg-[#F8F9F7] p-4 rounded-xl border border-[#ECEFEA] space-y-3">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-olive-dark">Standart müşteri</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-medium text-gray-600 mb-1">Yaprakları ayıklanmış alım (TL/kg)</label>
+                            <input type="number" id="price_std_clean_buy" step="0.5" min="0" class="w-full h-10 px-3 bg-white border border-olive-border rounded-lg text-sm font-semibold">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-medium text-gray-600 mb-1">Yaprakları ayıklanmamış alım (TL/kg)</label>
+                            <input type="number" id="price_std_unclean_buy" step="0.5" min="0" class="w-full h-10 px-3 bg-white border border-olive-border rounded-lg text-sm font-semibold">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kooperatif Ortağı -->
+                <div class="bg-[#F8F9F7] p-4 rounded-xl border border-[#ECEFEA] space-y-3">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-olive-dark">Kooperatif ortağı</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-medium text-gray-600 mb-1">Yaprakları ayıklanmış alım (TL/kg)</label>
+                            <input type="number" id="price_coop_clean_buy" step="0.5" min="0" class="w-full h-10 px-3 bg-white border border-olive-border rounded-lg text-sm font-semibold">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-medium text-gray-600 mb-1">Yaprakları ayıklanmamış alım (TL/kg)</label>
+                            <input type="number" id="price_coop_unclean_buy" step="0.5" min="0" class="w-full h-10 px-3 bg-white border border-olive-border rounded-lg text-sm font-semibold">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="px-6 py-4 bg-gray-50 border-t border-olive-border flex items-center justify-between gap-3">
+                <button type="button" id="resetDefaultPricesBtn" class="px-3.5 py-2 text-xs font-medium text-gray-600 hover:text-gray-900 cursor-pointer">
+                    Varsayılanlara dön
+                </button>
+                <div class="flex items-center gap-2">
+                    <button type="button" id="cancelSettingsBtn" class="px-4 py-2 bg-white border border-olive-border rounded-xl text-xs font-semibold text-gray-700 hover:bg-gray-50 cursor-pointer">
+                        İptal
+                    </button>
+                    <button type="button" id="saveSettingsBtn" class="px-5 py-2 bg-olive-dark hover:bg-olive-darker text-white rounded-xl text-xs font-semibold cursor-pointer">
+                        Kaydet
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const TARE_PER_BOAT = 35; // 1 tekne = 35 kg dara
+
+        // Varsayılan Zeytin Alım Fiyatları (TL/kg)
+        const DEFAULT_PRICES = {
+            standard: {
+                cleaned: { buy: 27 },
+                uncleaned: { buy: 26 }
+            },
+            coop: {
+                cleaned: { buy: 28 },
+                uncleaned: { buy: 27 }
+            }
+        };
+
+        function createRow(gross = 1000, boats = 0) {
+            return {
+                id: 'row_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+                gross: gross,
+                boats: boats
+            };
+        }
+
+        function loadSavedPrices() {
+            try {
+                const raw = localStorage.getItem('mudanya_imece_buy_prices');
+                if (!raw) return JSON.parse(JSON.stringify(DEFAULT_PRICES));
+                const parsed = JSON.parse(raw);
+                return {
+                    standard: {
+                        cleaned: {
+                            buy: Number(parsed?.standard?.cleaned?.buy) || DEFAULT_PRICES.standard.cleaned.buy
+                        },
+                        uncleaned: {
+                            buy: Number(parsed?.standard?.uncleaned?.buy) || DEFAULT_PRICES.standard.uncleaned.buy
+                        }
+                    },
+                    coop: {
+                        cleaned: {
+                            buy: Number(parsed?.coop?.cleaned?.buy) || DEFAULT_PRICES.coop.cleaned.buy
+                        },
+                        uncleaned: {
+                            buy: Number(parsed?.coop?.uncleaned?.buy) || DEFAULT_PRICES.coop.uncleaned.buy
+                        }
+                    }
+                };
+            } catch (err) {
+                return JSON.parse(JSON.stringify(DEFAULT_PRICES));
+            }
+        }
+
+        // Uygulama Durumu
+        let state = {
+            group: 'standard',       // 'standard' | 'coop'
+            status: 'cleaned',       // 'cleaned' | 'uncleaned'
+            rows: [createRow(1000, 0)],
+            customerName: '',
+            receiptNo: '',
+            previewMode: 'label',  // 'label' | 'a4'
+            prices: loadSavedPrices()
+        };
+
+        // DOM Referansları
+        const weighingRowsContainer = document.getElementById('weighingRowsContainer');
+        const addRowBtn = document.getElementById('addRowBtn');
+        const netAccountTotalSummary = document.getElementById('netAccountTotalSummary');
+        const customerNameInput = document.getElementById('customerNameInput');
+        const receiptNoInput = document.getElementById('receiptNoInput');
+        const groupBtns = document.querySelectorAll('.group-btn');
+        const statusBtns = document.querySelectorAll('.status-btn');
+        const modeLabelBtn = document.getElementById('modeLabelBtn');
+        const modeA4Btn = document.getElementById('modeA4Btn');
+        const previewSectionLabel = document.getElementById('previewSectionLabel');
+        const livePrintCanvas = document.getElementById('livePrintCanvas');
+
+        function formatNumber(num) {
+            return Math.round(num).toLocaleString('tr-TR');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            const bgClass = type === 'warning' ? 'bg-amber-600' : type === 'success' ? 'bg-olive-dark' : 'bg-gray-800';
+            toast.className = `${bgClass} text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-lg pointer-events-auto transition-all duration-300`;
+            toast.textContent = message;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Tek satır için Net kg hesabı: Brüt kg - (Tekne adedi * 35)
+        function computeRowNet(row) {
+            const gross = Math.max(0, Number(row.gross) || 0);
+            const boats = Math.max(0, Math.floor(Number(row.boats) || 0));
+            const net = Math.max(0, gross - (boats * TARE_PER_BOAT));
+            return { gross, boats, net };
+        }
+
+        // Tartım satırlarını oluştur ve render et
+        function renderWeighingRows() {
+            weighingRowsContainer.innerHTML = '';
+
+            state.rows.forEach((row, index) => {
+                const { gross, boats, net } = computeRowNet(row);
+                const rowWrapper = document.createElement('div');
+                rowWrapper.className = 'flex items-center gap-2';
+
+                const gridDiv = document.createElement('div');
+                gridDiv.className = 'grid grid-cols-3 gap-2.5 flex-1';
+
+                // 1. Brüt kg input
+                const grossInput = document.createElement('input');
+                grossInput.type = 'number';
+                grossInput.min = '0';
+                grossInput.step = '1';
+                grossInput.placeholder = '0';
+                grossInput.value = row.gross === '' ? '' : gross;
+                grossInput.setAttribute('aria-label', `${index + 1}. satır Brüt kg`);
+                grossInput.className = 'w-full h-11 px-3 text-sm font-bold text-[#1A211C] bg-white border border-olive-border rounded-xl focus:outline-none focus:border-olive-dark focus:ring-2 focus:ring-olive-dark/15 transition-all';
+                grossInput.addEventListener('input', (e) => {
+                    const val = e.target.value;
+                    row.gross = val === '' ? '' : Math.max(0, parseFloat(val) || 0);
+                    updateRowNetDisplayOnly(rowWrapper, row);
+                    updateUI();
+                });
+
+                // 2. Tekne adedi input (1 tekne = 35 kg dara)
+                const boatsInput = document.createElement('input');
+                boatsInput.type = 'number';
+                boatsInput.min = '0';
+                boatsInput.step = '1';
+                boatsInput.placeholder = '0';
+                boatsInput.value = row.boats === '' ? '' : boats;
+                boatsInput.setAttribute('aria-label', `${index + 1}. satır Tekne adedi`);
+                boatsInput.className = 'w-full h-11 px-3 text-sm font-bold text-[#1A211C] bg-white border border-olive-border rounded-xl focus:outline-none focus:border-olive-dark focus:ring-2 focus:ring-olive-dark/15 transition-all';
+                boatsInput.addEventListener('input', (e) => {
+                    const val = e.target.value;
+                    row.boats = val === '' ? '' : Math.max(0, Math.floor(parseFloat(val) || 0));
+                    updateRowNetDisplayOnly(rowWrapper, row);
+                    updateUI();
+                });
+
+                // 3. Net kg (otomatik hesaplanır, tıklama ve düzenleme kilitli/salt okunur)
+                const netInput = document.createElement('input');
+                netInput.type = 'text';
+                netInput.readOnly = true;
+                netInput.disabled = true;
+                netInput.tabIndex = -1;
+                netInput.setAttribute('aria-label', `${index + 1}. satır Net kg`);
+                netInput.setAttribute('aria-readonly', 'true');
+                netInput.setAttribute('aria-disabled', 'true');
+                netInput.value = `${formatNumber(net)} kg`;
+                netInput.className = 'w-full h-11 px-3 text-sm font-bold text-[#4A5A4E] bg-[#ECEFEB] border border-[#D5DBD2] rounded-xl select-none pointer-events-none cursor-not-allowed opacity-90';
+
+                gridDiv.appendChild(grossInput);
+                gridDiv.appendChild(boatsInput);
+                gridDiv.appendChild(netInput);
+                rowWrapper.appendChild(gridDiv);
+
+                // İkinci ve sonraki satırlarda silme butonu
+                if (index > 0) {
+                    const delBtn = document.createElement('button');
+                    delBtn.type = 'button';
+                    delBtn.title = 'Satırı sil';
+                    delBtn.setAttribute('aria-label', `${index + 1}. satırı sil`);
+                    delBtn.className = 'w-9 h-11 rounded-xl border border-red-200 bg-red-50 hover:bg-red-100 text-red-600 text-sm font-bold flex items-center justify-center shrink-0 transition-colors cursor-pointer';
+                    delBtn.textContent = '✕';
+                    delBtn.addEventListener('click', () => {
+                        state.rows = state.rows.filter(r => r.id !== row.id);
+                        renderWeighingRows();
+                        updateUI();
+                    });
+                    rowWrapper.appendChild(delBtn);
+                }
+
+                weighingRowsContainer.appendChild(rowWrapper);
+            });
+        }
+
+        function updateRowNetDisplayOnly(rowWrapper, row) {
+            const { net } = computeRowNet(row);
+            const netInput = rowWrapper.querySelector('input[readonly]');
+            if (netInput) netInput.value = `${formatNumber(net)} kg`;
+        }
+
+        // Tüm tartım satırlarını ve seçili alım fiyatını topla
+        function calculate() {
+            let totalGross = 0;
+            let totalBoats = 0;
+            let netKg = 0;
+
+            const enrichedRows = state.rows.map((r, idx) => {
+                const calcRow = computeRowNet(r);
+                totalGross += calcRow.gross;
+                totalBoats += calcRow.boats;
+                netKg += calcRow.net;
+                return {
+                    index: idx + 1,
+                    gross: calcRow.gross,
+                    boats: calcRow.boats,
+                    tare: calcRow.boats * TARE_PER_BOAT,
+                    net: calcRow.net
+                };
+            });
+
+            const buyPrice = Number(state.prices[state.group][state.status].buy) || 0;
+
+            return {
+                rows: enrichedRows,
+                rowCount: enrichedRows.length,
+                totalGross,
+                totalBoats,
+                netKg,
+                buyPrice
+            };
+        }
+
+        function getFormattedDateTime() {
+            const now = new Date();
+            return now.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' }) +
+                   ' ' +
+                   now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Canlı baskı önizlemesini oluştur (Etikette tartım satırları yazılmaz)
+        function renderLivePrintPreview(res) {
+            const dateStr = getFormattedDateTime();
+            const groupText = state.group === 'standard' ? 'Standart Müşteri' : 'Kooperatif Ortağı';
+            const statusText = state.status === 'cleaned' ? 'Yaprakları Ayıklanmış' : 'Yaprakları Ayıklanmamış';
+            const customerDisplay = state.customerName.trim() ? escapeHtml(state.customerName.trim()) : '-';
+            const receiptDisplay = state.receiptNo.trim() ? escapeHtml(state.receiptNo.trim()) : '-';
+
+            if (state.previewMode === 'label') {
+                previewSectionLabel.textContent = 'Etiket baskı önizlemesi (80 × 60 mm)';
+                livePrintCanvas.className = 'bg-white border-2 border-dashed border-gray-400 p-3.5 text-black w-full max-w-[340px]';
+                livePrintCanvas.innerHTML = `
+                    <div class="flex items-start justify-between border-b-2 border-black pb-1.5 mb-2">
+                        <div>
+                            <div class="font-extrabold text-xs tracking-tight uppercase">MUDANYA İMECE</div>
+                            <div class="text-[9px] font-bold text-gray-700">ÇEPNİ ZEYTİNYAĞI FABRİKASI</div>
+                        </div>
+                        <div class="text-right text-[9px] leading-tight">
+                            <div class="font-bold">${dateStr}</div>
+                            <div>Fiş No: <strong>${receiptDisplay}</strong></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-2.5">
+                        <div class="text-[9px] uppercase text-gray-600">Müşteri Adı</div>
+                        <div class="text-sm font-extrabold uppercase truncate">${customerDisplay}</div>
+                        <div class="text-[9.5px] text-gray-700 mt-0.5">${groupText} · ${statusText}</div>
+                    </div>
+
+                    <div class="flex items-center justify-between border-t border-black pt-2 text-[10px]">
+                        <span>Alım: <strong>${res.buyPrice.toLocaleString('tr-TR')} TL/kg</strong></span>
+                        <span class="bg-black text-white px-2.5 py-0.5 rounded font-extrabold">Toplam Net: ${formatNumber(res.netKg)} kg</span>
+                    </div>
+                `;
+            } else {
+                previewSectionLabel.textContent = 'A4 döküm baskı önizlemesi';
+                livePrintCanvas.className = 'bg-white border border-gray-300 p-4 text-gray-900 w-full';
+
+                const tableRowsHtml = res.rows.map(r => `
+                    <tr>
+                        <td class="py-1.5 font-medium">Tartım #${r.index}</td>
+                        <td class="py-1.5 text-right">${formatNumber(r.gross)} kg</td>
+                        <td class="py-1.5 text-right">${formatNumber(r.boats)} (${formatNumber(r.tare)} kg)</td>
+                        <td class="py-1.5 text-right font-bold">${formatNumber(r.net)} kg</td>
+                    </tr>
+                `).join('');
+
+                livePrintCanvas.innerHTML = `
+                    <div class="flex items-center justify-between border-b border-gray-300 pb-2 mb-3">
+                        <div>
+                            <div class="text-xs font-extrabold text-olive-dark uppercase">MUDANYA İMECE</div>
+                            <div class="text-[10px] font-bold text-gray-700">ÇEPNİ ZEYTİNYAĞI FABRİKASI</div>
+                        </div>
+                        <div class="text-right text-[10px] text-gray-600">
+                            <div class="font-bold text-gray-900">A4 ZEYTİN KABUL DÖKÜMÜ</div>
+                            <div>${dateStr} · Fiş No: <strong>${receiptDisplay}</strong></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-2.5 mb-3 text-[11px] flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                            <span class="text-gray-500">Müşteri Adı:</span>
+                            <strong class="uppercase text-gray-900 ml-1">${customerDisplay}</strong>
+                        </div>
+                        <div class="text-gray-600 text-[10px]">
+                            ${groupText} · ${statusText} · Alım: <strong>${res.buyPrice.toLocaleString('tr-TR')} TL/kg</strong>
+                        </div>
+                    </div>
+
+                    <table class="w-full text-[11px] border-collapse mb-3">
+                        <thead>
+                            <tr class="border-b border-gray-300 text-left text-gray-600">
+                                <th class="py-1.5">Satır</th>
+                                <th class="py-1.5 text-right">Brüt</th>
+                                <th class="py-1.5 text-right">Tekne / Dara</th>
+                                <th class="py-1.5 text-right">Net</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            ${tableRowsHtml}
+                        </tbody>
+                    </table>
+
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-t border-gray-300 pt-2 text-xs font-extrabold text-olive-dark">
+                        <span>Toplam (${res.rowCount} tartım)</span>
+                        <span>Brüt: ${formatNumber(res.totalGross)} kg · Tekne: ${formatNumber(res.totalBoats)} · Net: ${formatNumber(res.netKg)} kg</span>
+                    </div>
+                `;
+            }
+        }
+
+        function updateModeButtons() {
+            if (state.previewMode === 'label') {
+                modeLabelBtn.className = 'h-14 px-2 bg-white text-[#1A281E] text-xs font-bold rounded-xl leading-tight flex items-center justify-center text-center transition-all cursor-pointer shadow-xs';
+                modeA4Btn.className = 'h-14 px-2 bg-[#496A53] hover:bg-[#54785F] active:bg-[#3E5C47] text-white text-xs font-semibold rounded-xl flex items-center justify-center text-center transition-all cursor-pointer';
+            } else {
+                modeA4Btn.className = 'h-14 px-2 bg-white text-[#1A281E] text-xs font-bold rounded-xl flex items-center justify-center text-center transition-all cursor-pointer shadow-xs';
+                modeLabelBtn.className = 'h-14 px-2 bg-[#496A53] hover:bg-[#54785F] active:bg-[#3E5C47] text-white text-xs font-semibold rounded-xl leading-tight flex items-center justify-center text-center transition-all cursor-pointer';
+            }
+        }
+
+        // Tüm ekranı güncelle
+        function updateUI() {
+            const res = calculate();
+
+            document.getElementById('displayBuyPrice').textContent = `${res.buyPrice.toLocaleString('tr-TR')} TL/kg`;
+
+            netAccountTotalSummary.textContent = `Toplam (${res.rowCount} tartım) brüt: ${formatNumber(res.totalGross)} kg tekne: ${formatNumber(res.totalBoats)} net: ${formatNumber(res.netKg)} kg`;
+
+            document.getElementById('summaryCustomerName').textContent = state.customerName.trim() ? state.customerName.trim() : '-';
+            document.getElementById('summaryReceiptNo').textContent = state.receiptNo.trim() ? state.receiptNo.trim() : '-';
+            document.getElementById('summaryTotalNetKg').textContent = formatNumber(res.netKg);
+
+            updateModeButtons();
+            renderLivePrintPreview(res);
+        }
+
+        function updateToggleButtons() {
+            groupBtns.forEach(btn => {
+                const isSelected = btn.dataset.group === state.group;
+                btn.className = isSelected
+                    ? 'group-btn h-11 px-3 rounded-xl text-[13px] font-semibold transition-all cursor-pointer border-2 border-olive-dark bg-olive-soft text-olive-dark'
+                    : 'group-btn h-11 px-3 rounded-xl text-[13px] font-medium transition-all cursor-pointer border border-olive-border bg-white text-[#2E3831] hover:bg-gray-50';
+            });
+
+            statusBtns.forEach(btn => {
+                const isSelected = btn.dataset.status === state.status;
+                btn.className = isSelected
+                    ? 'status-btn h-11 px-3 rounded-xl text-[13px] font-semibold transition-all cursor-pointer border-2 border-olive-dark bg-olive-soft text-olive-dark'
+                    : 'status-btn h-11 px-3 rounded-xl text-[13px] font-medium transition-all cursor-pointer border border-olive-border bg-white text-[#2E3831] hover:bg-gray-50';
+            });
+        }
+
+        // "+ Satır ekle"
+        addRowBtn.addEventListener('click', () => {
+            state.rows.push(createRow(0, 0));
+            renderWeighingRows();
+            updateUI();
+        });
+
+        groupBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                state.group = btn.dataset.group;
+                updateToggleButtons();
+                updateUI();
+            });
+        });
+
+        statusBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                state.status = btn.dataset.status;
+                updateToggleButtons();
+                updateUI();
+            });
+        });
+
+        customerNameInput.addEventListener('input', (e) => {
+            state.customerName = e.target.value;
+            customerNameInput.classList.remove('border-red-500', 'ring-2', 'ring-red-200');
+            updateUI();
+        });
+
+        receiptNoInput.addEventListener('input', (e) => {
+            state.receiptNo = e.target.value;
+            updateUI();
+        });
+
+        modeLabelBtn.addEventListener('click', () => {
+            state.previewMode = 'label';
+            updateUI();
+        });
+
+        modeA4Btn.addEventListener('click', () => {
+            state.previewMode = 'a4';
+            updateUI();
+        });
+
+        document.getElementById('printNowBtn').addEventListener('click', () => {
+            if (!state.customerName.trim()) {
+                customerNameInput.classList.add('border-red-500', 'ring-2', 'ring-red-200');
+                customerNameInput.focus();
+                showToast('Lütfen önce "Müşteri adı" alanını doldurun.', 'warning');
+                return;
+            }
+            window.print();
+        });
+
+        // "Yeni hesaplama" sıfırlama
+        document.getElementById('newCalcBtn').addEventListener('click', () => {
+            state.group = 'standard';
+            state.status = 'cleaned';
+            state.rows = [createRow(1000, 0)];
+            state.customerName = '';
+            state.receiptNo = '';
+            state.previewMode = 'label';
+
+            customerNameInput.value = '';
+            receiptNoInput.value = '';
+            customerNameInput.classList.remove('border-red-500', 'ring-2', 'ring-red-200');
+
+            updateToggleButtons();
+            renderWeighingRows();
+            updateUI();
+            showToast('Tüm alanlar ve tartım satırları sıfırlandı.', 'success');
+        });
+
+        // Fiyat Ayarları Modalı
+        const settingsModal = document.getElementById('settingsModal');
+
+        function populateSettingsInputs() {
+            document.getElementById('price_std_clean_buy').value = state.prices.standard.cleaned.buy;
+            document.getElementById('price_std_unclean_buy').value = state.prices.standard.uncleaned.buy;
+            document.getElementById('price_coop_clean_buy').value = state.prices.coop.cleaned.buy;
+            document.getElementById('price_coop_unclean_buy').value = state.prices.coop.uncleaned.buy;
+        }
+
+        document.getElementById('openSettingsBtn').addEventListener('click', () => {
+            populateSettingsInputs();
+            settingsModal.classList.remove('hidden');
+            settingsModal.classList.add('flex');
+        });
+
+        function closeSettings() {
+            settingsModal.classList.add('hidden');
+            settingsModal.classList.remove('flex');
+        }
+
+        document.getElementById('closeSettingsBtn').addEventListener('click', closeSettings);
+        document.getElementById('cancelSettingsBtn').addEventListener('click', closeSettings);
+
+        document.getElementById('resetDefaultPricesBtn').addEventListener('click', () => {
+            state.prices = JSON.parse(JSON.stringify(DEFAULT_PRICES));
+            populateSettingsInputs();
+            showToast('Varsayılan alım fiyatları yüklendi. Kaydetmeyi unutmayın.');
+        });
+
+        document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+            state.prices.standard.cleaned.buy = Math.max(0, parseFloat(document.getElementById('price_std_clean_buy').value) || 0);
+            state.prices.standard.uncleaned.buy = Math.max(0, parseFloat(document.getElementById('price_std_unclean_buy').value) || 0);
+            state.prices.coop.cleaned.buy = Math.max(0, parseFloat(document.getElementById('price_coop_clean_buy').value) || 0);
+            state.prices.coop.uncleaned.buy = Math.max(0, parseFloat(document.getElementById('price_coop_unclean_buy').value) || 0);
+
+            localStorage.setItem('mudanya_imece_buy_prices', JSON.stringify(state.prices));
+            updateUI();
+            closeSettings();
+            showToast('Zeytin alım fiyatları kaydedildi.', 'success');
+        });
+
+        // Başlangıç Yüklemesi
+        updateToggleButtons();
+        renderWeighingRows();
+        updateUI();
+    </script>
+</body>
+</html>
